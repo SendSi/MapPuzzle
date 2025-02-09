@@ -8,8 +8,8 @@ public class PuzzleMgr : MonoBehaviour
     public RawImage rawImage;
     private RectTransform rawImage_RT;
     public Vector2 basicSize;
-    private float newWidth;
-    private float newHeight;
+    private float sizeWidth;
+    private float sizeHeight;
     private int intervalSize = 170;
 
     private void Awake()
@@ -34,8 +34,8 @@ public class PuzzleMgr : MonoBehaviour
             texture.LoadImage(System.IO.File.ReadAllBytes(filePath));
             rawImage.texture = texture;
             TextureScaleResize(texture);
-            int cellNumX = (int)(newWidth / intervalSize);
-            int cellNumY = (int)(newHeight / intervalSize);
+            int cellNumX = (int)(sizeWidth / intervalSize);
+            int cellNumY = (int)(sizeHeight / intervalSize);
             if (cellNumX % 2 != 0)
             {
                 cellNumX++;
@@ -48,9 +48,10 @@ public class PuzzleMgr : MonoBehaviour
 
             PuzzlePool.Instance.CreatePuzzle(cellNumY, cellNumX, texture, intervalSize);
 
-            newWidth = cellNumX * intervalSize; //保证图片不超过基本尺寸
-            newHeight = cellNumY * intervalSize;
-            rawImage_RT.sizeDelta = new Vector2(newWidth, newHeight);
+            sizeWidth = cellNumX * intervalSize; //保证图片不超过基本尺寸
+            sizeHeight = cellNumY * intervalSize;
+            rawImage_RT.sizeDelta = new Vector2(sizeWidth, sizeHeight);
+            InitPuzzleGrid(cellNumY, cellNumX);
         }
     }
 
@@ -72,17 +73,74 @@ public class PuzzleMgr : MonoBehaviour
             ratio = expand ? longSide / basicSize.y : basicSize.y / longSide;
         }
 
-        newWidth = expand ? tex.width / ratio : tex.width * ratio;
-        newHeight = expand ? tex.height / ratio : tex.height * ratio;
+        sizeWidth = expand ? tex.width / ratio : tex.width * ratio;
+        sizeHeight = expand ? tex.height / ratio : tex.height * ratio;
 
-        if (newHeight > basicSize.y) //伪正方形图片
+        if (sizeHeight > basicSize.y) //伪正方形图片
         {
-            ratio = basicSize.y / newHeight;
-            newWidth *= ratio;
-            newHeight = basicSize.y;
+            ratio = basicSize.y / sizeHeight;
+            sizeWidth *= ratio;
+            sizeHeight = basicSize.y;
         }
 
-        newWidth = (int)(newWidth);
-        newHeight = (int)(newHeight); //得到 width 和 height 后，设置图片的 sizeDelta
+        sizeWidth = (int)(sizeWidth);
+        sizeHeight = (int)(sizeHeight); //得到 width 和 height 后，设置图片的 sizeDelta
+    }
+
+    /// <summary> 格子碎片 </summary>
+    private int[] puzzle;
+
+    /// <summary> 初始化格子 </summary>
+    void InitPuzzleGrid(int cellNumY, int cellNumX)
+    {
+        puzzle = null;
+        puzzle = new int[cellNumY * cellNumX];
+        for (int i = 0; i < puzzle.Length; i++)
+        {
+            puzzle[i] = 99999;
+        }
+    }
+
+    /// <summary> 检测该格子下 是否有碎片 </summary>
+    public bool CheckHasvePiece(int gridId)
+    {
+        if (puzzle.Length <= gridId)
+        {
+            Debug.LogError("检查格子碎片时,超时索引");
+            return false;
+        }
+
+        if (puzzle[gridId] != 99999)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary> 网格填 进碎片 </summary>
+    public void SetPiece(int gridId, int pieceId)
+    {
+        puzzle[gridId] = pieceId;
+    }
+
+    /// <summary> 取出碎片 </summary>
+    public void OutPiece(int gridId)
+    {
+        puzzle[gridId] = 99999;
+    }
+
+    public bool IsFinish()
+    {
+        for (int i = 0; i < puzzle.Length - 1; i++)
+        {
+            if (puzzle[i] >= puzzle[i + 1])
+            {
+                return false;
+            }
+        }
+
+        Debug.Log("拼图完成了");
+        return true;
     }
 }

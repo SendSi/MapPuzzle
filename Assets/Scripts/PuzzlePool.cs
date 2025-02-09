@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public enum PieceType
@@ -26,8 +27,8 @@ public class PuzzlePool : MonoBehaviour
 {
     public static PuzzlePool Instance;
     [SerializeField] GameObject grid, TL, TR, T1, T2, BL, BR, B1, B2, L1, L2, R1, R2, C1, C2;
-    [SerializeField] private Transform puzzlePanel;
-    [SerializeField] private Transform canvasTrans;
+    [SerializeField] private Transform gridPanel;
+    [SerializeField] private Transform piecePanel;
     List<GameObject> gridList = new List<GameObject>();
 
     [SerializeField] Vector2 textureStartPos, offsetX, offsetY;
@@ -55,7 +56,7 @@ public class PuzzlePool : MonoBehaviour
         for (int i = 0; i < totalGridNum; i++)
         {
             gridObj = GetPiece(PieceType.Grid, i);
-            gridObj.transform.SetParent(puzzlePanel);
+            gridObj.transform.SetParent(gridPanel);
             gridList.Add(gridObj);
             recyclePiece.Add(gridObj);
         }
@@ -96,7 +97,7 @@ public class PuzzlePool : MonoBehaviour
                     }
                 }
 
-                picese.transform.SetParent(canvasTrans);
+                picese.transform.SetParent(piecePanel);
                 picese.GetComponent<RectTransform>().anchoredPosition = gridList[index].transform.position;
 
                 picese.transform.Find("Mask/texture").GetComponent<RawImage>().texture = tex;

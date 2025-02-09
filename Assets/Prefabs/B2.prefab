@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 128632574337505074}
   - component: {fileID: 128632574337505077}
   - component: {fileID: 128632574337505075}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 128632574423186642}
   - component: {fileID: 128632574423186640}
   - component: {fileID: 128632574423186643}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: texture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -172,7 +172,8 @@ GameObject:
   - component: {fileID: 128632574556908737}
   - component: {fileID: 128632574556908767}
   - component: {fileID: 128632574556908766}
-  m_Layer: 5
+  - component: {fileID: 1163376941}
+  m_Layer: 8
   m_Name: colliderMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -235,6 +236,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1163376941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128632574556908736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b5179a3e9253cf4d99534c926169ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &128632574827522666
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,7 +258,7 @@ GameObject:
   m_Component:
   - component: {fileID: 128632574827522667}
   - component: {fileID: 128632574827522664}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: B2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -314,7 +327,7 @@ GameObject:
   - component: {fileID: 128632575778937920}
   - component: {fileID: 128632575778937950}
   - component: {fileID: 128632575778937921}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: spaculer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
