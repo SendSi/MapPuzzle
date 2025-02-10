@@ -22,7 +22,6 @@ public enum PieceType
     C1,
     C2
 }
-
 public class PuzzlePool : MonoBehaviour
 {
     public static PuzzlePool Instance;
@@ -30,11 +29,8 @@ public class PuzzlePool : MonoBehaviour
     [SerializeField] private Transform gridPanel;
     [SerializeField] private Transform piecePanel;
     List<GameObject> gridList = new List<GameObject>();
-
     [SerializeField] Vector2 textureStartPos, offsetX, offsetY;
-
     private Vector2 tempV2;
-
     private Texture2D tex;
 
     private void Awake()
@@ -47,6 +43,7 @@ public class PuzzlePool : MonoBehaviour
     /// <summary> 左上角为0,0   向右,向下为正方向 </summary>
     public void CreatePuzzle(int row, int col, Texture2D pTex, float interval)
     {
+        Recycle();//先回收吧
         tex = pTex;
         tempV2 = textureStartPos;
         int totalGridNum = row * col;
@@ -62,6 +59,24 @@ public class PuzzlePool : MonoBehaviour
         }
 
         StartCoroutine(IECreate(row, col));
+
+        StartCoroutine(ICreateRandomPos());
+    }
+
+    private IEnumerator ICreateRandomPos()
+    {
+        yield return new WaitForSeconds(1.5f);
+        var x1 = 1600;
+        var x2 = 1720;
+        var y1 = 180;
+        var y2 = 880;
+
+        foreach (var item in piceseListTmpPos)
+        {
+            var xx = Random.Range(x1, x2);
+            var yy = Random.Range(y1, y2);
+            item.anchoredPosition = new Vector2(xx, yy);
+        }
     }
 
     IEnumerator IECreate(int row, int col)
@@ -69,6 +84,8 @@ public class PuzzlePool : MonoBehaviour
         yield return new WaitForSeconds(0.7f);
         CreatePieces(row, col);
     }
+
+    List<RectTransform> piceseListTmpPos = new List<RectTransform>();
 
     void CreatePieces(int row, int col)
     {
@@ -98,7 +115,8 @@ public class PuzzlePool : MonoBehaviour
                 }
 
                 picese.transform.SetParent(piecePanel);
-                picese.GetComponent<RectTransform>().anchoredPosition = gridList[index].transform.position;
+                var piceseTrs = picese.GetComponent<RectTransform>();
+                piceseTrs.anchoredPosition = gridList[index].transform.position;
 
                 picese.transform.Find("Mask/texture").GetComponent<RawImage>().texture = tex;
                 temp = picese.transform.Find("Mask/texture").GetComponent<RectTransform>();
@@ -108,6 +126,7 @@ public class PuzzlePool : MonoBehaviour
                 tempV2 += offsetX;
                 index++;
                 recyclePiece.Add(picese);
+                piceseListTmpPos.Add(piceseTrs);
             }
 
             tempV2.x = textureStartPos.x; //换行做图片的偏移
@@ -210,7 +229,6 @@ public class PuzzlePool : MonoBehaviour
 
         return obj;
     }
-
 
     GameObject CreatePriece__2(PieceType pType)
     {

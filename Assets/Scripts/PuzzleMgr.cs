@@ -1,6 +1,8 @@
 ﻿using System.Windows.Forms;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Application = UnityEngine.Application;
 
 public class PuzzleMgr : MonoBehaviour
 {
@@ -15,7 +17,6 @@ public class PuzzleMgr : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -32,27 +33,44 @@ public class PuzzleMgr : MonoBehaviour
             string filePath = ofd.FileName;
             Texture2D texture = new Texture2D(1, 1);
             texture.LoadImage(System.IO.File.ReadAllBytes(filePath));
-            rawImage.texture = texture;
-            TextureScaleResize(texture);
-            int cellNumX = (int)(sizeWidth / intervalSize);
-            int cellNumY = (int)(sizeHeight / intervalSize);
-            if (cellNumX % 2 != 0)
-            {
-                cellNumX++;
-            }
 
-            if (cellNumY % 2 != 0)
-            {
-                cellNumY++;
-            }
-
-            PuzzlePool.Instance.CreatePuzzle(cellNumY, cellNumX, texture, intervalSize);
-
-            sizeWidth = cellNumX * intervalSize; //保证图片不超过基本尺寸
-            sizeHeight = cellNumY * intervalSize;
-            rawImage_RT.sizeDelta = new Vector2(sizeWidth, sizeHeight);
-            InitPuzzleGrid(cellNumY, cellNumX);
+            SetInPic(texture);
         }
+    }
+
+    public void LoadInternalPic(string picName)
+    {
+        var texture = Resources.Load<Texture2D>(picName);
+        SetInPic(texture);
+    }
+
+
+    void SetInPic(Texture2D texture)
+    {
+        rawImage.texture = texture;
+        TextureScaleResize(texture);
+        int cellNumX = (int)(sizeWidth / intervalSize);
+        int cellNumY = (int)(sizeHeight / intervalSize);
+        if (cellNumX % 2 != 0)
+        {
+            cellNumX++;
+        }
+        if (cellNumY % 2 != 0)
+        {
+            cellNumY++;
+        }
+        PuzzlePool.Instance.CreatePuzzle(cellNumY, cellNumX, texture, intervalSize);
+
+        sizeWidth = cellNumX * intervalSize; //保证图片不超过基本尺寸
+        sizeHeight = cellNumY * intervalSize;
+        rawImage_RT.sizeDelta = new Vector2(sizeWidth, sizeHeight);
+        InitPuzzleGrid(cellNumY, cellNumX);
+    }
+    
+
+    public void SwitchToScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 
     void TextureScaleResize(Texture2D tex)
